@@ -11,8 +11,7 @@ async function getUsers(req, res) {
 async function getProfile(req, res) {
   const user = await UserModel.findById(req.user.userId).select('-password');
   if (!user) return res.status(401).json({ msg: 'Unauthorized' });
-  req.user = user;
-  res.status(200).json({ msg: req.user });
+  return res.status(200).json(user);
 }
 
 export { getUsers, getProfile };
