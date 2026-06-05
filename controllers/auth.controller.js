@@ -22,9 +22,6 @@ async function registerUser(req, res) {
 // ROUTE POST /api/auth/login
 async function loginUser(req, res) {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ msg: 'Email and password are required' });
-  }
 
   const user = await UserModel.findOne({ email });
   if (!user) return res.status(401).json({ msg: 'Invalid Credentials' });
