@@ -7,10 +7,6 @@ import { generateToken } from '../utils/generateToken.js';
 async function registerUser(req, res) {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ msg: 'All fields are required' });
-  }
-
   const existingUser = await UserModel.findOne({ email });
   if (existingUser) {
     return res.status(409).json({ msg: 'Email already exists' });
