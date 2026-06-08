@@ -17,6 +17,8 @@ The backend includes basic authentication features using JWT and provides REST e
 - JWT-based authentication
 - User registration and login
 - Password hashing with bcrypt
+- Role-based authorization
+- Input validation middleware
 - REST API structure with controllers and routes
 - MongoDB integration with Mongoose
 
@@ -30,17 +32,20 @@ The backend includes basic authentication features using JWT and provides REST e
 │   ├── auth.controller.js
 │   └── user.controller.js
 ├── middleware
+│   ├── admin.middleware.js
 │   ├── auth.middleware.js
 │   ├── error.middleware.js
+│   ├── validate.middleware.js
 │   └── notFound.middleware.js
 ├── models
 │   └── user.model.js
 ├── routes
 │   ├── auth.routes.js
-│   ├── dashboard.routes.js
 │   └── user.routes.js
 ├── utils
 │   └── generateToken.js
+├── validators
+│   └── auth.validator.js
 ├── app.js
 └── server.js
 ```
@@ -51,11 +56,12 @@ _The following files are omitted for simplicity: `.env`, `.gitignore`, `package.
 
 The endpoints can be tested using Postman or Thunder Client (VS Code).
 
-| Method | Endpoint             | Action                                              |
-| ------ | -------------------- | --------------------------------------------------- |
-| GET    | `/api/users`         | Retrieve all registered users (name and email only) |
-| POST   | `/api/auth/register` | Register a new user                                 |
-| POST   | `/api/auth/login`    | Authenticate a user and return a JWT                |
+| Method | Endpoint             | Description                                           | Access              |
+| ------ | -------------------- | ----------------------------------------------------- | ------------------- |
+| GET    | `/api/users`         | Retrieve all registered users (_excluding passwords_) | Admin only          |
+| GET    | `/api/auth/profile`  | Retrieve authenticated user's profile                 | Authenticated users |
+| POST   | `/api/auth/register` | Register a new user                                   | Public              |
+| POST   | `/api/auth/login`    | Authenticate a user and return a JWT                  | Public              |
 
 _Some API endpoints are currently used for development and testing purposes and may be removed or modified in future versions._
 
@@ -65,7 +71,7 @@ _Some API endpoints are currently used for development and testing purposes and 
 2. Setup `.env` file:
    - `MONGO_URI = your_connection_string`
    - `JWT_SECRET = your_secret_key`
-3. Run the server: `pnpm start`
+3. Run the server: `pnpm run dev`
 4. The server will run on:
    - `http://localhost:3000`
 
@@ -83,12 +89,6 @@ _Some API endpoints are currently used for development and testing purposes and 
 }
 ```
 
-#### Status Codes
-
-- `201 Created` : { "msg": "User Created" }
-- `400 Bad Request` : { "msg": "All fields are required" }
-- `409 Conflict` : { "msg": 'Email already exists' }
-
 ### POST `/api/auth/login`
 
 #### Request Body
@@ -100,8 +100,15 @@ _Some API endpoints are currently used for development and testing purposes and 
 }
 ```
 
-#### Status Codes
+## Testing
 
-- `200 OK`: { "msg": "Login Successful" }
-- `400 Bad Request`: { "msg": "Email and password are required" }
-- `401 Unauthorized`: { "msg": "Invalid Credentials" }
+The project includes integration tests using Jest and Supertest. The covered scenarios are:
+
+- User registration:
+  - 201 Created
+  - 400 Bad Request
+  - 409 Conflict
+
+- User login:
+  - 200 OK
+  - 401 Unauthorized
