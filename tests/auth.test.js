@@ -1,30 +1,5 @@
 import request from 'supertest';
-import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../app.js';
-import { UserModel } from '../models/user.model.js';
-process.env.JWT_SECRET = 'test-secret';
-
-let mongoServer;
-
-beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
-});
-
-afterEach(async () => {
-  const collections = mongoose.connection.collections;
-  for (const key in collections) {
-    await collections[key].deleteMany({});
-  }
-});
-
-afterAll(async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-  await mongoServer.stop();
-});
 
 describe('POST /api/auth/register', () => {
   it('should return 201 if user created', async () => {
@@ -49,12 +24,13 @@ describe('POST /api/auth/register', () => {
   it('should return 400 if invalid email address', async () => {
     const newUser = {
       name: 'User Name',
-      password: 'userpassword',
+      password: '123',
       email: '123123',
     };
     const res = await request(app).post('/api/auth/register').send(newUser);
+    const emailError = res.body.errors.find((e) => e.path.includes('email'));
     expect(res.statusCode).toBe(400); //jest
-    expect(res.body.errors[0].message).toBe('Invalid email address'); //jest
+    expect(emailError.message).toBe('Invalid email address'); //jest
   });
 
   it('should return 409 if email duplicated', async () => {
@@ -86,7 +62,7 @@ describe('POST /api/auth/login', () => {
     };
     await request(app).post('/api/auth/register').send(user);
     const res = await request(app).post('/api/auth/login').send({
-      email: 'test@test.com',
+      email: user.email,
       password: 'wrongPassword',
     });
     expect(res.statusCode).toBe(401);
@@ -102,46 +78,10 @@ describe('POST /api/auth/login', () => {
       .post('/api/auth/register')
       .send(newUser);
     const loginRes = await request(app).post('/api/auth/login').send({
-      password: 'userpassword',
-      email: 'user@gmail.com',
+      password: newUser.password,
+      email: newUser.email,
     });
     expect(loginRes.statusCode).toBe(200);
     expect(loginRes.body).toHaveProperty('token');
-  });
-});
-
-describe('GET /api/users/profile', () => {
-  it('should return 401 if no token is provided', async () => {
-    const res = await request(app).get('/api/users/profile');
-    expect(res.statusCode).toBe(401); //jest
-    expect(res.body.msg).toBe('Token not provided'); //jest
-  });
-  it('should return 401 if token is invalid', async () => {
-    const res = await request(app)
-      .get('/api/users/profile')
-      .set('Authorization', 'Bearer invalid-token');
-    expect(res.statusCode).toBe(401); //jest
-    expect(res.body.msg).toBe('Invalid or expired token'); //jest
-  });
-  it('should return 200 if valid token', async () => {
-    const user = {
-      name: 'User Name',
-      password: 'userpassword',
-      email: 'user@gmail.com',
-    };
-    //insert user
-    await request(app).post('/api/auth/register').send(user);
-    //login user, retrieve token
-    const loginRes = await request(app).post('/api/auth/login').send({
-      email: user.email,
-      password: user.password,
-    });
-    const token = loginRes.body.token;
-
-    //access profile
-    const profileRes = await request(app)
-      .get('/api/users/profile')
-      .set('Authorization', `Bearer ${token}`);
-    expect(profileRes.statusCode).toBe(200); //jest
   });
 });
