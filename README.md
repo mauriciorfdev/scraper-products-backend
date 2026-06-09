@@ -104,11 +104,17 @@ _Some API endpoints are currently used for development and testing purposes and 
 
 The project includes integration tests using Jest and Supertest. The covered scenarios are:
 
-- User registration:
-  - 201 Created
-  - 400 Bad Request
-  - 409 Conflict
+- Register:
+  - 400 missing fields
+  - 400 invalid email
+  - 409 duplicate email
+  - 201 created
 
-- User login:
-  - 200 OK
-  - 401 Unauthorized
+- Login:
+  - 401 invalid credentials
+  - 200 successful login
+
+- Profile:
+  - 401 missing token
+  - 401 invalid token
+  - 200 valid token
