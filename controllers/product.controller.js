@@ -1,4 +1,5 @@
 import { ProductModel } from '../models/product.model.js';
+import { scrapeService } from '../services/scrape.service.js';
 
 async function getProducts(req, res) {
   const products = await ProductModel.find().select({
@@ -11,7 +12,10 @@ async function getProducts(req, res) {
 }
 
 async function scrapeProducts(req, res) {
-  return res.status(200).json({ message: 'scrape products...' });
+  const results = await scrapeService();
+  console.log('controller results: ', results);
+  await ProductModel.insertMany(results);
+  return res.status(201).json({ success: true, inserted: results.length });
 }
 
 export { getProducts, scrapeProducts };

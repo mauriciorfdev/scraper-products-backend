@@ -1,5 +1,7 @@
 import express from 'express';
 const router = express.Router();
+import { authMiddleware } from '../middleware/auth.middleware.js';
+import { adminMiddleware } from '../middleware/admin.middleware.js';
 
 import {
   getProducts,
@@ -7,6 +9,6 @@ import {
 } from '../controllers/product.controller.js';
 
 router.get('/', getProducts);
-router.post('/scrape', scrapeProducts);
+router.post('/scrape', authMiddleware, adminMiddleware, scrapeProducts);
 
 export default router;
