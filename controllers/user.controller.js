@@ -8,10 +8,10 @@ async function getUsers(req, res) {
 }
 
 // GET /api/users/profile
-async function getProfile(req, res) {
+/* async function getProfile(req, res) {
   const user = await UserModel.findById(req.user.userId).select('-password');
   if (!user) return res.status(401).json({ msg: 'Unauthorized' });
   return res.status(200).json(user);
-}
+} */
 
-export { getUsers, getProfile };
+export { getUsers };

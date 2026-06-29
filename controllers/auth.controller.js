@@ -1,6 +1,7 @@
 import { UserModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/generateToken.js';
+import { mapUser } from '../utils/user.mapper.js';
 
 // DESC Register New User
 // ROUTE POST /api/auth/register
@@ -30,9 +31,23 @@ async function loginUser(req, res) {
   if (!isMatch) return res.status(401).json({ msg: 'Invalid Credentials' });
 
   const token = generateToken(user._id);
-  return res.status(200).json({ msg: 'Login OK', token });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: false, //true in production
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 15,
+  });
 
   return res.status(200).json({ msg: 'Login Successful' });
 }
 
-export { registerUser, loginUser };
+//ROUTE GET /api/auth/me
+async function getCurrentUser(req, res) {
+  const user = await UserModel.findById(req.user.userId).select('-password');
+  if (!user) return res.status(401).json({ msg: 'Unauthorized' });
+  const cleanUser = mapUser(user);
+  return res.status(200).json(cleanUser);
+}
+
+export { registerUser, loginUser, getCurrentUser };
