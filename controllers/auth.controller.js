@@ -50,4 +50,14 @@ async function getCurrentUser(req, res) {
   return res.status(200).json(cleanUser);
 }
 
-export { registerUser, loginUser, getCurrentUser };
+//POST /api/auth/logout
+async function logoutUser(req, res) {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false, //true in production (HTTPS)
+    sameSite: 'lax',
+  });
+  return res.status(200).json({ msg: 'Logout Successful' });
+}
+
+export { registerUser, loginUser, getCurrentUser, logoutUser };
