@@ -47,6 +47,10 @@ async function getCurrentUser(req, res) {
   const user = await UserModel.findById(req.user.userId).select('-password');
   if (!user) return res.status(401).json({ msg: 'Unauthorized' });
   const cleanUser = mapUser(user);
+  res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, max-age=0',
+  );
   return res.status(200).json(cleanUser);
 }
 
