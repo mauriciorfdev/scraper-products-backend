@@ -10,13 +10,13 @@ async function registerUser(req, res) {
 
   const existingUser = await UserModel.findOne({ email });
   if (existingUser) {
-    return res.status(409).json({ msg: 'Email already exists' });
+    return res.status(409).json({ message: 'Email already exists' });
   }
 
   const newUser = new UserModel({ name, email, password });
   await newUser.save();
 
-  return res.status(201).json({ msg: 'User Created' });
+  return res.status(201).json({ message: 'User Created' });
 }
 
 // DESC Login User
@@ -25,10 +25,10 @@ async function loginUser(req, res) {
   const { email, password } = req.body;
 
   const user = await UserModel.findOne({ email });
-  if (!user) return res.status(401).json({ msg: 'Invalid Credentials' });
+  if (!user) return res.status(401).json({ message: 'Invalid Credentials' });
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).json({ msg: 'Invalid Credentials' });
+  if (!isMatch) return res.status(401).json({ message: 'Invalid Credentials' });
 
   const token = generateToken(user._id);
 
@@ -39,13 +39,13 @@ async function loginUser(req, res) {
     maxAge: 1000 * 60 * 15,
   });
 
-  return res.status(200).json({ msg: 'Login Successful' });
+  return res.status(200).json({ message: 'Login Successful' });
 }
 
 //ROUTE GET /api/auth/me
 async function getCurrentUser(req, res) {
   const user = await UserModel.findById(req.user.userId).select('-password');
-  if (!user) return res.status(401).json({ msg: 'Unauthorized' });
+  if (!user) return res.status(401).json({ message: 'Unauthorized' });
   const cleanUser = mapUser(user);
   res.setHeader(
     'Cache-Control',
@@ -61,7 +61,7 @@ async function logoutUser(req, res) {
     secure: false, //true in production (HTTPS)
     sameSite: 'lax',
   });
-  return res.status(200).json({ msg: 'Logout Successful' });
+  return res.status(200).json({ message: 'Logout Successful' });
 }
 
 export { registerUser, loginUser, getCurrentUser, logoutUser };

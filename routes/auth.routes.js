@@ -15,7 +15,7 @@ router.post('/register', validateMiddleware(registerSchema), registerUser);
 
 router.post('/login', validateMiddleware(loginSchema), loginUser);
 
-router.post('/logout', authMiddleware, logoutUser);
+router.post('/logout', logoutUser);
 
 router.get('/me', authMiddleware, getCurrentUser);
 
