@@ -2,68 +2,48 @@
 
 ## About Project
 
-REST API built with Express and MongoDB for managing supermarket product data obtained through automated scraping.
-
-The backend includes basic authentication features using JWT and provides REST endpoints for user management.
-
-## Architecture
-
-- **API (Express + Node.js)** — Handles HTTP requests, routing, controllers, and authentication logic.
-
-- **Database (MongoDB + Mongoose)** — Stores user data.
+REST API for the Scraper Products application. It provides authenticated access to supermarket product data and administrative resources, and is designed to integrate with an automated scraping service
 
 ## Features
 
-- JWT-based authentication
-- User registration and login
-- Password hashing with bcrypt
-- Role-based authorization
-- Input validation middleware
-- REST API structure with controllers and routes
-- MongoDB integration with Mongoose
+- User registration and authentication
+- Product catalog access
+- Authenticated user profile retrieval
+- Role-based access control
+- Admin access to user data and scraper operations
 
-## Folder Structure Overview
+## Architecture
 
-```
-.
-├── config
-│   └── db.js
-├── controllers
-│   ├── auth.controller.js
-│   └── user.controller.js
-├── middleware
-│   ├── admin.middleware.js
-│   ├── auth.middleware.js
-│   ├── error.middleware.js
-│   ├── validate.middleware.js
-│   └── notFound.middleware.js
-├── models
-│   └── user.model.js
-├── routes
-│   ├── auth.routes.js
-│   └── user.routes.js
-├── utils
-│   └── generateToken.js
-├── validators
-│   └── auth.validator.js
-├── app.js
-└── server.js
-```
-
-_The following files are omitted for simplicity: `.env`, `.gitignore`, `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `README.md`_
+- **Authentication** — Protects private endpoints using JWT stored in HTTP-only cookies.
+- **Authorization** — Restricts access to protected resources based on user roles.
+- **Validation** — Validates incoming requests using Zod schemas.
+- **Database** — Stores user data in MongoDB using Mongoose.
 
 ## API Endpoints
 
 The endpoints can be tested using Postman or Thunder Client (VS Code).
 
-| Method | Endpoint             | Description                                           | Access              |
-| ------ | -------------------- | ----------------------------------------------------- | ------------------- |
-| GET    | `/api/users`         | Retrieve all registered users (_excluding passwords_) | Admin only          |
-| GET    | `/api/auth/profile`  | Retrieve authenticated user's profile                 | Authenticated users |
-| POST   | `/api/auth/register` | Register a new user                                   | Public              |
-| POST   | `/api/auth/login`    | Authenticate a user and return a JWT                  | Public              |
+### Authentication
 
-_Some API endpoints are currently used for development and testing purposes and may be removed or modified in future versions._
+| Method | Endpoint             | Description                                   | Access              |
+| ------ | -------------------- | --------------------------------------------- | ------------------- |
+| POST   | `/api/auth/register` | Register a new user                           | Public              |
+| POST   | `/api/auth/login`    | Authenticate a user                           | Public              |
+| POST   | `/api/auth/logout`   | Log out the current user                      | Authenticated users |
+| GET    | `/api/auth/me`       | Retrieve the authenticated user's information | Authenticated users |
+
+### Users
+
+| Method | Endpoint     | Description                   | Access     |
+| ------ | ------------ | ----------------------------- | ---------- |
+| GET    | `/api/users` | Retrieve all registered users | Admin only |
+
+### Products
+
+| Method | Endpoint               | Description                  | Access              |
+| ------ | ---------------------- | ---------------------------- | ------------------- |
+| GET    | `/api/products`        | Retrieve all products        | Authenticated users |
+| POST   | `/api/products/scrape` | Trigger the scraping service | Admin only          |
 
 ## Getting Started
 
@@ -75,46 +55,19 @@ _Some API endpoints are currently used for development and testing purposes and 
 4. The server will run on:
    - `http://localhost:3000`
 
-## Request Example
-
-### POST `/api/auth/register`
-
-#### Request Body
-
-```json
-{
-  "name": "John",
-  "email": "john@gmail.com",
-  "password": "john123"
-}
-```
-
-### POST `/api/auth/login`
-
-#### Request Body
-
-```json
-{
-  "email": "john@gmail.com",
-  "password": "john123"
-}
-```
-
 ## Testing
 
-The project includes integration tests using Jest and Supertest. The covered scenarios are:
+Integration tests were implemented using Jest and Supertest.
 
-- Register:
-  - 400 missing fields
-  - 400 invalid email
-  - 409 duplicate email
-  - 201 created
+Authentication:
 
-- Login:
-  - 401 invalid credentials
-  - 200 successful login
+- **400 Bad Request** – Missing fields, invalid email
+- **401 Unauthorized** – Invalid credentials
+- **409 Conflict** – Duplicate email
+- **201 Created** – Successful user registration
+- **200 OK** – Successful login
 
-- Profile:
-  - 401 missing token
-  - 401 invalid token
-  - 200 valid token
+Users:
+
+- **403 Forbidden** – Admin acces required
+- **200 OK** – Successfully retrives the user list as an admin
