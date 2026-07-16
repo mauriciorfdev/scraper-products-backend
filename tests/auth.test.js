@@ -82,6 +82,6 @@ describe('POST /api/auth/login', () => {
       email: newUser.email,
     });
     expect(loginRes.statusCode).toBe(200);
-    expect(loginRes.body).toHaveProperty('token');
+    expect(loginRes.headers['set-cookie']).toBeDefined();
   });
 });
