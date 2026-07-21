@@ -1,5 +1,5 @@
 import { ProductModel } from '../models/product.model.js';
-import { scrapeService } from '../services/scraper.service.js';
+import { scrapeService } from '../services/test-scraper.service.js';
 
 async function getProducts(req, res) {
   const products = await ProductModel.find().select({
@@ -12,10 +12,14 @@ async function getProducts(req, res) {
 }
 
 async function scrapeProducts(req, res) {
-  const results = await scrapeService();
-  console.log('controller results: ', results);
-  await ProductModel.insertMany(results);
-  return res.status(201).json({ success: true, inserted: results.length });
+  //const results = await scrapeService();
+  //console.log('controller results: ', results);
+  //await ProductModel.insertMany(results);
+  //return res.status(201).json({ success: true, inserted: results.length });
+  const results = { name: 'nameEx', brand: 'brandEx', ingredients: 'ingEx' };
+  return res
+    .status(201)
+    .json({ success: true, results, msg: 'Bot-bypass testing pending' });
 }
 
 export { getProducts, scrapeProducts };
