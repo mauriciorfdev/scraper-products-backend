@@ -1,5 +1,5 @@
 import { ProductModel } from '../models/product.model.js';
-import { scrapeService } from '../services/scrape.service.js';
+import { scrapeService } from '../services/scraper.service.js';
 
 async function getProducts(req, res) {
   const products = await ProductModel.find().select({
