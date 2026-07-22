@@ -3,6 +3,14 @@ import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/generateToken.js';
 import { mapUser } from '../utils/user.mapper.js';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
+};
+
 // DESC Register New User
 // ROUTE POST /api/auth/register
 async function registerUser(req, res) {
@@ -33,9 +41,7 @@ async function loginUser(req, res) {
   const token = generateToken(user._id);
 
   res.cookie('token', token, {
-    httpOnly: true,
-    secure: false, //true in production
-    sameSite: 'lax',
+    ...cookieOptions,
     maxAge: 1000 * 60 * 15,
   });
 
@@ -56,11 +62,7 @@ async function getCurrentUser(req, res) {
 
 //POST /api/auth/logout
 async function logoutUser(req, res) {
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: false, //true in production (HTTPS)
-    sameSite: 'lax',
-  });
+  res.clearCookie('token', cookieOptions);
   return res.status(200).json({ message: 'Logout Successful' });
 }
 
