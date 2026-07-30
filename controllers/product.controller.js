@@ -1,14 +1,11 @@
 import { ProductModel } from '../models/product.model.js';
 import { scrapeService } from '../services/test-scraper.service.js';
+import { mapProduct } from '../utils/product.mapper.js';
 
 async function getProducts(req, res) {
-  const products = await ProductModel.find().select({
-    name: 1,
-    brand: 1,
-    ingredients: 1,
-    _id: 0,
-  });
-  return res.status(200).json(products);
+  const products = await ProductModel.find().select();
+  const cleanProducts = products.map((product) => mapProduct(product));
+  return res.status(200).json(cleanProducts);
 }
 
 async function scrapeProducts(req, res) {
