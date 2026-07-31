@@ -19,4 +19,9 @@ async function scrapeProducts(req, res) {
     .json({ success: true, results, msg: 'Bot-bypass testing pending' });
 }
 
-export { getProducts, scrapeProducts };
+async function updateProduct(req, res) {
+  const { id } = req.params;
+  return res.status(200).json({ msg: 'updateProduct !', identificador: id });
+}
+
+export { getProducts, scrapeProducts, updateProduct };
