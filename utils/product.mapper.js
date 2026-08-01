@@ -4,5 +4,6 @@ export function mapProduct(product) {
     name: product.name,
     brand: product.brand,
     ingredients: product.ingredients,
+    aiAnalysis: product.aiAnalysis ? product.aiAnalysis : null,
   };
 }
