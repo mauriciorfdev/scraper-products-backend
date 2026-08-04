@@ -6,11 +6,11 @@ import { adminMiddleware } from '../middleware/admin.middleware.js';
 import {
   getProducts,
   scrapeProducts,
-  updateProduct,
+  analyzeProduct,
 } from '../controllers/product.controller.js';
 
 router.get('/', getProducts);
 router.post('/scrape', authMiddleware, adminMiddleware, scrapeProducts);
-router.patch('/:id', authMiddleware, adminMiddleware, updateProduct);
+router.post('/:id/analysis', authMiddleware, adminMiddleware, analyzeProduct);
 
 export default router;

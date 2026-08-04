@@ -19,15 +19,17 @@ async function scrapeProducts(req, res) {
     .json({ success: true, results, msg: 'Bot-bypass testing pending' });
 }
 
-async function updateProduct(req, res) {
+async function analyzeProduct(req, res) {
   console.log(req.body);
+  const resultAnalysis = req.body; // mock analysis from ia service
+  const aiMetadata = { model: 'gemini-3.5-flash' };
+  const aiAnalysis = { ...resultAnalysis, ...aiMetadata };
   const updatedProduct = await ProductModel.findByIdAndUpdate(
     req.params.id,
-    { aiAnalysis: req.body },
+    { aiAnalysis: aiAnalysis },
     { returnDocument: 'after' },
   );
-  return res.status(200).json(updatedProduct);
-  //return res.status(200).json({ msg: 'updateProduct !', identificador: id });
+  return res.status(200).json(mapProduct(updatedProduct));
 }
 
-export { getProducts, scrapeProducts, updateProduct };
+export { getProducts, scrapeProducts, analyzeProduct };

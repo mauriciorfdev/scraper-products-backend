@@ -27,6 +27,11 @@ const ProductSchema = new mongoose.Schema({
       allergens: [String],
       diets: [{ name: String, compatible: Boolean, reasons: [String] }],
       additives: [{ name: String, code: String, purpose: String }],
+      model: String,
+      generatedAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
     default: undefined,
   },
