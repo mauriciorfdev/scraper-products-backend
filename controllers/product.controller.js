@@ -1,6 +1,7 @@
 import { ProductModel } from '../models/product.model.js';
 import { scrapeService } from '../services/test-scraper.service.js';
 import { mapProduct } from '../utils/product.mapper.js';
+import * as productService from '../services/product.service.js';
 
 async function getProducts(req, res) {
   const products = await ProductModel.find();
@@ -20,16 +21,9 @@ async function scrapeProducts(req, res) {
 }
 
 async function analyzeProduct(req, res) {
-  console.log(req.body);
-  const resultAnalysis = req.body; // mock analysis from ia service
-  const aiMetadata = { model: 'gemini-3.5-flash' };
-  const aiAnalysis = { ...resultAnalysis, ...aiMetadata };
-  const updatedProduct = await ProductModel.findByIdAndUpdate(
-    req.params.id,
-    { aiAnalysis: aiAnalysis },
-    { returnDocument: 'after' },
-  );
-  return res.status(200).json(mapProduct(updatedProduct));
+  const { id } = req.params;
+  const analyzedProduct = await productService.analyzeProduct(id);
+  return res.status(200).json(mapProduct(analyzedProduct));
 }
 
 export { getProducts, scrapeProducts, analyzeProduct };

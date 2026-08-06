@@ -2,7 +2,9 @@
 
 ## About Project
 
-REST API for the Scraper Products application. It provides authenticated access to supermarket product data and administrative resources, and is designed to integrate with an automated scraping service
+REST API for the Scraper Products application. It provides authenticated access to supermarket product data, AI-powered ingredient analysis, and administrative resources.
+
+The application uses a dataset previously collected through automated scraping.
 
 ## Tech Stack
 
@@ -12,9 +14,11 @@ REST API for the Scraper Products application. It provides authenticated access 
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Zod](https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white)
 
 ## Features
 
+- AI-powered ingredient analysis
 - User registration and authentication
 - Product catalog access
 - Authenticated user profile retrieval
@@ -26,7 +30,8 @@ REST API for the Scraper Products application. It provides authenticated access 
 - **Authentication** — Protects private endpoints using JWT stored in HTTP-only cookies.
 - **Authorization** — Restricts access to protected resources based on user roles.
 - **Validation** — Validates incoming requests using Zod schemas.
-- **Database** — Stores user data in MongoDB using Mongoose.
+- **Database** — Stores user and product data in MongoDB using Mongoose.
+- **AI Service** — Integrates with Google Gemini to analyze product ingredients and generate structured nutritional information.
 
 ## API Endpoints
 
@@ -49,10 +54,10 @@ The endpoints can be tested using Postman or Thunder Client (VS Code).
 
 ### Products
 
-| Method | Endpoint               | Description                  | Access              |
-| ------ | ---------------------- | ---------------------------- | ------------------- |
-| GET    | `/api/products`        | Retrieve all products        | Authenticated users |
-| POST   | `/api/products/scrape` | Trigger the scraping service | Admin only          |
+| Method | Endpoint                     | Description                | Access              |
+| ------ | ---------------------------- | -------------------------- | ------------------- |
+| GET    | `/api/products`              | Retrieve all products      | Authenticated users |
+| POST   | `/api/products/:id/analysis` | Analyze a product using AI | Admin only          |
 
 ## Getting Started
 
@@ -60,6 +65,8 @@ The endpoints can be tested using Postman or Thunder Client (VS Code).
 2. Setup `.env` file:
    - `MONGO_URI = your_connection_string`
    - `JWT_SECRET = your_secret_key`
+   - `GEMINI_API_KEY = your_ai_api_key`
+   - `AI_MODEL = your_ai_model`
 3. Run the server: `pnpm run dev`
 4. The server will run on:
    - `http://localhost:3000`
