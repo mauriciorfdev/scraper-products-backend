@@ -1,10 +1,10 @@
-# Scraper Products | Backend
+# Food Product Analyzer | Backend
 
 ## About Project
 
-REST API for the Scraper Products application. It provides authenticated access to supermarket product data, AI-powered ingredient analysis, and administrative resources.
+REST API for analyzing supermarket product ingredients using AI. It provides authenticated access to supermarket product data, ingredient analysis, and administrative resources.
 
-The application uses a dataset previously collected through automated scraping.
+_Product data was originally collected through an automated scraping process_.
 
 ## Tech Stack
 
@@ -23,7 +23,7 @@ The application uses a dataset previously collected through automated scraping.
 - Product catalog access
 - Authenticated user profile retrieval
 - Role-based access control
-- Admin access to user data and scraper operations
+- Admin access to user data and analysis operations
 
 ## Architecture
 
@@ -87,3 +87,7 @@ Users:
 
 - **403 Forbidden** – Admin acces required
 - **200 OK** – Successfully retrives the user list as an admin
+
+## Related Repository
+
+[Food Product Analyzer | Frontend](https://github.com/mauriciorfdev/scraper-products-frontend)
